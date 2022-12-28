@@ -1,50 +1,24 @@
-import requests
-import logging
-from config import TOKEN
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
-from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, ConversationHandler,)
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, CallbackContext
 from model import *
-from controller import *
+from spy import *
+import datetime
 
-if __name__ == '__main__':
-    # Создаем Updater и передаем ему токен вашего бота.
-    updater = Updater(TOKEN)
-    # получаем диспетчера для регистрации обработчиков
-    dispatcher = updater.dispatcher
+""" token='5805211308:AAEHWGI3Fb0FDxiUvRC0RDuzbpv6Lm7Vp_M'
+bot=telebot.TeleBot(token)
+@bot.message_handler(commands=['start'])
 
-    # Определяем обработчик разговоров `ConversationHandler`
-    # с состояниями CHOICE, RATIONAL_ONE, RATIONAL_TWO, OPERATIONS_RATIONAL, OPERATIONS_COMPLEX, COMPLEX_ONE, COMPLEX_TWO
-    conversation_handler = ConversationHandler(  # здесь строится логика разговора
-        # точка входа в разговор
-        entry_points=[CommandHandler('start', start)],
-        # этапы разговора, каждый со своим списком обработчиков сообщений
-        states={
-            CHOICE: [MessageHandler(Filters.text, choice)],
-            SURNAME_EMP: [MessageHandler(Filters.text, find_emp)],
-            POSITION: [MessageHandler(Filters.text, find_employee_by_position)],
-            LOW: [MessageHandler(Filters.text, get_salary_range)],
-            HIGH: [MessageHandler(Filters.text, find_employees_by_salary_range)],
-            IDX_NEW_EMP: [MessageHandler(Filters.text, add_employee_idx)],
-            LAST_NAME: [MessageHandler(Filters.text, add_employee_last_name)],
-            FIRST_NAME: [MessageHandler(Filters.text, add_employee_first_name)],
-            POS: [MessageHandler(Filters.text, add_employee_position)],
-            PHONE_NUMBER: [MessageHandler(Filters.text, add_employee_phone_number)],
-            SALARY: [MessageHandler(Filters.text, add_employee_salary)],
-            DEL_EMP: [MessageHandler(Filters.text, delete_data)],
-            INDEX: [MessageHandler(Filters.text, update_data_ind)],
-            NAME: [MessageHandler(Filters.text, update_data_name)],
-            NEW_DATA: [MessageHandler(Filters.text, update_data)],
-            EXP_FILE_JSON: [MessageHandler(Filters.text, write_json)],
-            EXP_FILE_CSV: [MessageHandler(Filters.text, write_csv)]
-        },
-        # точка выхода из разговора
-        fallbacks=[CommandHandler('cancel', cancel)],
-    )
+def start_message(message):
+  bot.send_message(message.chat.id,"Привет ✌️ ")
+bot.infinity_polling() """
 
-    # Добавляем обработчик разговоров `conv_handler`
-    dispatcher.add_handler(conversation_handler)
+app = ApplicationBuilder().token('5805211308:AAEHWGI3Fb0FDxiUvRC0RDuzbpv6Lm7Vp_M').build()
 
-    # Запуск бота
-    updater.start_polling()
-    updater.idle()
+app.add_handler(CommandHandler('hello', hello))
+app.add_handler(CommandHandler('time', time_command))
+app.add_handler(CommandHandler('help', help_command))
+app.add_handler(CommandHandler('sum', sum_command))
+# app.add_handler(CommandHandler('time', time_command))
+print('server start')
 
+app.run_polling()
